@@ -39,3 +39,6 @@ lib/optional/*.jar
 src/tests/antunit/core/output
 .idea
 *.iml
+
+# Data files
+*.dat
