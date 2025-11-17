@@ -33,14 +33,14 @@
                   <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                   <Component id="btnGuardar" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="157" max="32767" attributes="0"/>
+              <EmptySpace pref="178" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="tfPrecio" min="-2" pref="100" max="-2" attributes="0"/>
                   <Component id="tfAnio" min="-2" pref="100" max="-2" attributes="0"/>
                   <Component id="tfModelo" min="-2" pref="100" max="-2" attributes="0"/>
                   <Component id="tfMarca" min="-2" pref="100" max="-2" attributes="0"/>
                   <Component id="tfMatricula" min="-2" pref="100" max="-2" attributes="0"/>
                   <Component id="btnCerrar" min="-2" max="-2" attributes="0"/>
+                  <Component id="spinnerPrecio" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
           </Group>
@@ -78,8 +78,8 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="tfPrecio" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="spinnerPrecio" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="35" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -96,6 +96,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="GUARDAR"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGuardarActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnCerrar">
       <Properties>
@@ -117,8 +120,6 @@
     <Component class="javax.swing.JTextField" name="tfModelo">
     </Component>
     <Component class="javax.swing.JTextField" name="tfAnio">
-    </Component>
-    <Component class="javax.swing.JTextField" name="tfPrecio">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
@@ -144,6 +145,8 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Precio"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JSpinner" name="spinnerPrecio">
     </Component>
   </SubComponents>
 </Form>
