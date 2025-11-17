@@ -47,25 +47,17 @@ public class Conector {
         return flag;
     }
     
-//    public boolean actualizarCoche (Object o) {
-//        boolean flag = false;
-//        
-//        try {
-//            bd.store(o);
-//        } catch (Exception e) {
-//            System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
-//        }
-//        
-//        return flag;
-//    }
-//    
-//    public Coche buscarCoche () {
-//        Coche buscado = null;
-//        
-//        Query query = bd.query();
-//        query.constrain(Coche.class);
-//        return buscado;
-//    }
+    public boolean actualizarCoche (Object o) {
+        boolean flag = false;
+        
+        try {
+            // TODO implementar actualización
+        } catch (Exception e) {
+            System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
+        }
+        
+        return flag;
+    }
     
     public ArrayList<Coche> listarCoches () {
         ArrayList<Coche> coches = new ArrayList<>();
