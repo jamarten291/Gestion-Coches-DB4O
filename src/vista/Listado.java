@@ -4,6 +4,7 @@
  */
 package vista;
 
+import controlador.Checker;
 import controlador.Conector;
 import java.awt.TextField;
 import java.util.ArrayList;
@@ -43,18 +44,26 @@ public class Listado extends javax.swing.JDialog {
         }
     }
     
+    public boolean validInput () {
+        return !tfMatricula.getText().isEmpty() && 
+                Checker.formatoMatricula(tfMatricula.getText()) &&
+                !tfMarca.getText().isEmpty() && 
+                !tfModelo.getText().isEmpty() && 
+                Checker.tryParseToInt(tfAnio.getText()) &&
+                Checker.tryParseToInt(tfPrecio.getText());
+    }
+    
     private void cargarCoches () {
         if (conn.conectar()) {
             ArrayList<Coche> coches = conn.listarCoches();
             actualizarTabla(coches);
-            conn.cerrar();
         } else {
             JOptionPane.showMessageDialog(
-                        this, 
-                        "No se ha podido abrir la base de datos", 
-                        "Error", 
-                        JOptionPane.ERROR_MESSAGE
-                );
+                    this, 
+                    "No se ha podido abrir la base de datos", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
@@ -113,8 +122,18 @@ public class Listado extends javax.swing.JDialog {
         jLabel1.setText("LISTADO COCHES");
 
         btnModificar.setText("MODIFICAR");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
 
         btnBorrar.setText("BORRAR");
+        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarActionPerformed(evt);
+            }
+        });
 
         btnSalir.setText("SALIR");
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
@@ -225,6 +244,78 @@ public class Listado extends javax.swing.JDialog {
         }
         
     }//GEN-LAST:event_tableCochesMouseClicked
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        if (validInput()) {
+            Coche c = new Coche(
+                    tfMatricula.getText(),
+                    tfMarca.getText(),
+                    tfModelo.getText(),
+                    Integer.parseInt(tfAnio.getText()),
+                    Integer.parseInt(tfPrecio.getText())
+            );
+            
+            if (conn.conectar() && conn.actualizarCoche(c)) {
+                cargarCoches();
+                JOptionPane.showMessageDialog(
+                        this, 
+                        "Se ha realizado la operación de forma exitosa", 
+                        "Información", 
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                JOptionPane.showMessageDialog(
+                        this, 
+                        "No se ha podido actualizar el campo", 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } else {
+            JOptionPane.showMessageDialog(
+                    this, 
+                    "Primero rellena los campos con datos válidos", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        if (validInput()) {
+            Coche c = new Coche(
+                    tfMatricula.getText(),
+                    tfMarca.getText(),
+                    tfModelo.getText(),
+                    Integer.parseInt(tfAnio.getText()),
+                    Integer.parseInt(tfPrecio.getText())
+            );
+            
+            if (conn.conectar() && conn.borrarCoche(c)) {
+                cargarCoches();
+                JOptionPane.showMessageDialog(
+                        this, 
+                        "Se ha realizado la operación de forma exitosa", 
+                        "Información", 
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                JOptionPane.showMessageDialog(
+                        this, 
+                        "No se ha podido borrar el campo", 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } else {
+            JOptionPane.showMessageDialog(
+                    this, 
+                    "Primero rellena los campos con datos válidos", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }//GEN-LAST:event_btnBorrarActionPerformed
 
     /**
      * @param args the command line arguments

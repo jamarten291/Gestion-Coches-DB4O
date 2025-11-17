@@ -1,6 +1,9 @@
 package vista;
 
+import controlador.Checker;
 import controlador.Conector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import modelo.Coche;
 
@@ -141,36 +144,53 @@ public class Alta extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if (conn.conectar()) {
-            Object valorSpinner = spinnerPrecio.getValue();
-            int precio = ((Number) valorSpinner).intValue();
-            Coche c = new Coche(
-                    tfMatricula.getText(),
-                    tfMarca.getText(),
-                    tfModelo.getText(),
-                    Integer.parseInt(tfAnio.getText()),
-                    precio
-            );
-            
-            if (!conn.insertarCoche(c)) {
-                JOptionPane.showMessageDialog(
-                        this, 
-                        "Se ha realizado la operación de forma exitosa", 
-                        "Información", 
-                        JOptionPane.INFORMATION_MESSAGE
+        if (validInput()) {
+            if (conn.conectar()) {
+                Object valorSpinner = spinnerPrecio.getValue();
+                int precio = ((Number) valorSpinner).intValue();
+                Coche c = new Coche(
+                        tfMatricula.getText(),
+                        tfMarca.getText(),
+                        tfModelo.getText(),
+                        Integer.parseInt(tfAnio.getText()),
+                        precio
                 );
-            } else {
-                JOptionPane.showMessageDialog(
-                        this, 
-                        "No se ha podido insertar el campo", 
-                        "Error", 
-                        JOptionPane.ERROR_MESSAGE
-                );
+
+                if (!conn.insertarCoche(c)) {
+                    JOptionPane.showMessageDialog(
+                            this, 
+                            "Se ha realizado la operación de forma exitosa", 
+                            "Información", 
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                } else {
+                    JOptionPane.showMessageDialog(
+                            this, 
+                            "No se ha podido insertar el campo", 
+                            "Error", 
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
             }
-            conn.cerrar();
+        } else {
+            JOptionPane.showMessageDialog(
+                    this, 
+                    "Primero rellena los campos con datos válidos", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
+    public boolean validInput () {
+        return !tfMatricula.getText().isEmpty() && 
+                Checker.formatoMatricula(tfMatricula.getText()) &&
+                !tfMarca.getText().isEmpty() && 
+                !tfModelo.getText().isEmpty() && 
+                Checker.tryParseToInt(tfAnio.getText()) &&
+                Checker.tryParseToInt(spinnerPrecio.getValue().toString());
+    }
+    
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
         dispose();
     }//GEN-LAST:event_btnCerrarActionPerformed
