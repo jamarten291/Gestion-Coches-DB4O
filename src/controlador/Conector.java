@@ -6,6 +6,9 @@ package controlador;
 
 import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
+import com.db4o.ObjectSet;
+import java.util.ArrayList;
+import modelo.Coche;
 
 /**
  *
@@ -41,6 +44,18 @@ public class Conector {
         }
         
         return flag;
+    }
+    
+    public ArrayList<Coche> listarCoches () {
+        ArrayList<Coche> coches = new ArrayList<>();
+        
+        ObjectSet resultado = bd.query(Coche.class);
+        
+        for (Object o : resultado) {
+            coches.add((Coche) o);
+        }
+        
+        return coches;
     }
     
     public boolean cerrar () {
