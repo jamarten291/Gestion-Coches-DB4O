@@ -33,14 +33,14 @@
                   <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                   <Component id="btnGuardar" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="178" max="32767" attributes="0"/>
+              <EmptySpace pref="179" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="tfAnio" min="-2" pref="100" max="-2" attributes="0"/>
                   <Component id="tfModelo" min="-2" pref="100" max="-2" attributes="0"/>
                   <Component id="tfMarca" min="-2" pref="100" max="-2" attributes="0"/>
                   <Component id="tfMatricula" min="-2" pref="100" max="-2" attributes="0"/>
                   <Component id="btnCerrar" min="-2" max="-2" attributes="0"/>
-                  <Component id="spinnerPrecio" min="-2" max="-2" attributes="0"/>
+                  <Component id="spinnerPrecio" min="-2" pref="75" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
           </Group>
@@ -104,6 +104,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="CERRAR"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCerrarActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>

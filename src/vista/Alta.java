@@ -23,6 +23,7 @@ public class Alta extends javax.swing.JDialog {
     public Alta(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        conn = new Conector();
     }
 
     /**
@@ -58,6 +59,11 @@ public class Alta extends javax.swing.JDialog {
         });
 
         btnCerrar.setText("CERRAR");
+        btnCerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setText("ALTA COCHES");
@@ -85,14 +91,14 @@ public class Alta extends javax.swing.JDialog {
                     .addComponent(jLabel5)
                     .addComponent(jLabel6)
                     .addComponent(btnGuardar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 178, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 179, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tfAnio, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tfModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tfMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tfMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCerrar)
-                    .addComponent(spinnerPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(spinnerPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(55, 55, 55))
             .addGroup(layout.createSequentialGroup()
                 .addGap(170, 170, 170)
@@ -149,22 +155,25 @@ public class Alta extends javax.swing.JDialog {
             if (!conn.insertarCoche(c)) {
                 JOptionPane.showMessageDialog(
                         this, 
-                        "No se ha podido insertar el campo", 
-                        "Error", 
-                        JOptionPane.ERROR_MESSAGE
-                );
-            } else {
-                JOptionPane.showMessageDialog(
-                        this, 
                         "Se ha realizado la operación de forma exitosa", 
                         "Información", 
                         JOptionPane.INFORMATION_MESSAGE
                 );
-                
-                
+            } else {
+                JOptionPane.showMessageDialog(
+                        this, 
+                        "No se ha podido insertar el campo", 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
+            conn.cerrar();
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnCerrarActionPerformed
 
     /**
      * @param args the command line arguments
