@@ -12,8 +12,8 @@ public class Coche {
     private String matricula;
     private String marca;
     private String modelo;
-    private int anio;
-    private int precio;
+    private Integer anio;
+    private Integer precio;
 
     public Coche() {
     }

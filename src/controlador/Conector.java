@@ -7,6 +7,7 @@ package controlador;
 import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
+import com.db4o.query.Query;
 import java.util.ArrayList;
 import modelo.Coche;
 
@@ -45,6 +46,26 @@ public class Conector {
         
         return flag;
     }
+    
+//    public boolean actualizarCoche (Object o) {
+//        boolean flag = false;
+//        
+//        try {
+//            bd.store(o);
+//        } catch (Exception e) {
+//            System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
+//        }
+//        
+//        return flag;
+//    }
+//    
+//    public Coche buscarCoche () {
+//        Coche buscado = null;
+//        
+//        Query query = bd.query();
+//        query.constrain(Coche.class);
+//        return buscado;
+//    }
     
     public ArrayList<Coche> listarCoches () {
         ArrayList<Coche> coches = new ArrayList<>();

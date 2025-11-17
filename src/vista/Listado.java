@@ -5,7 +5,12 @@
 package vista;
 
 import controlador.Conector;
+import java.awt.TextField;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import modelo.Coche;
 
 /**
  *
@@ -20,14 +25,36 @@ public class Listado extends javax.swing.JDialog {
      */
     public Listado(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();
         conn = new Conector();
+        
+        initComponents();
         tableModel = (DefaultTableModel) tableCoches.getModel();
+        
+        cargarCoches();
+        
+    }
+    
+    private void actualizarTabla (ArrayList<Coche> coches) {
+        tableModel.setRowCount(0);
+        
+        for (Coche c : coches) {
+            Object[] data = { c.getMatricula(), c.getMarca(), c.getModelo(), c.getAnio(), c.getPrecio() };
+            tableModel.addRow(data);
+        }
     }
     
     private void cargarCoches () {
         if (conn.conectar()) {
-            
+            ArrayList<Coche> coches = conn.listarCoches();
+            actualizarTabla(coches);
+            conn.cerrar();
+        } else {
+            JOptionPane.showMessageDialog(
+                        this, 
+                        "No se ha podido abrir la base de datos", 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE
+                );
         }
     }
 
@@ -75,6 +102,11 @@ public class Listado extends javax.swing.JDialog {
                 return types [columnIndex];
             }
         });
+        tableCoches.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableCochesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tableCoches);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -85,6 +117,11 @@ public class Listado extends javax.swing.JDialog {
         btnBorrar.setText("BORRAR");
 
         btnSalir.setText("SALIR");
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Matrícula");
 
@@ -171,6 +208,23 @@ public class Listado extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void tableCochesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCochesMouseClicked
+        int selectedRow = tableCoches.rowAtPoint(evt.getPoint());
+        
+        if (selectedRow != -1) {
+            JTextField[] tfList = { tfMatricula, tfMarca, tfModelo, tfAnio, tfPrecio };
+            
+            for (int i = 0; i < tfList.length; i++) {
+                tfList[i].setText(tableModel.getValueAt(selectedRow, i).toString());
+            }
+        }
+        
+    }//GEN-LAST:event_tableCochesMouseClicked
 
     /**
      * @param args the command line arguments
