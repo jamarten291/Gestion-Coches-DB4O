@@ -273,7 +273,7 @@ public class Listado extends javax.swing.JDialog {
         }
         
         int precio = Integer.parseInt(tableModel.getValueAt(selectedRow, 5).toString());
-        boolean alta = (boolean) tableModel.getValueAt(selectedRow, 6);
+        boolean alta = (Boolean) tableModel.getValueAt(selectedRow, 6);
         tfDNI.setText(tableModel.getValueAt(selectedRow, 7).toString());
         
         spinnerPrecio.setValue(precio);
