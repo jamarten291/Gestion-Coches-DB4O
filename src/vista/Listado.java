@@ -4,9 +4,8 @@
  */
 package vista;
 
-import controlador.Checker;
 import controlador.Conector;
-import java.awt.TextField;
+import controlador.HelperClass;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -39,23 +38,30 @@ public class Listado extends javax.swing.JDialog {
         tableModel.setRowCount(0);
         
         for (Coche c : coches) {
-            Object[] data = { c.getMatricula(), c.getMarca(), c.getModelo(), c.getAnio(), c.getPrecio() };
+            Object[] data = { c.getMatricula(), c.getMarca(), c.getModelo(), c.getColor(), c.getPrecio(), c.deAlta(), c.getDni() };
             tableModel.addRow(data);
         }
     }
     
     public boolean validInput () {
-        return !tfMatricula.getText().isEmpty() && 
-                Checker.formatoMatricula(tfMatricula.getText()) &&
-                !tfMarca.getText().isEmpty() && 
-                !tfModelo.getText().isEmpty() && 
-                Checker.tryParseToInt(tfAnio.getText()) &&
-                Checker.tryParseToInt(tfPrecio.getText());
+        boolean valid = true;
+        JTextField[] tfList = { tfMarca, tfModelo, tfColor, tfDNI };
+        
+        for (JTextField tf : tfList) {
+            if (tf.getText().isEmpty()) valid = false;
+        }
+        
+        if (!HelperClass.matchesRegex(tfMatricula.getText(),"[0-9]{4} [BCDFGHJKLMNPQRSTVWXYZ]{3}") ||
+                Integer.parseInt(spinnerPrecio.getValue().toString()) <= 0) {
+            valid = false;
+        }
+        
+        return valid;
     }
     
     private void cargarCoches () {
         if (conn.conectar()) {
-            ArrayList<Coche> coches = conn.listarCoches();
+            ArrayList<Coche> coches = conn.listarObjetos(new Coche());
             actualizarTabla(coches);
         } else {
             JOptionPane.showMessageDialog(
@@ -89,9 +95,13 @@ public class Listado extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         tfModelo = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        tfAnio = new javax.swing.JTextField();
+        tfColor = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        tfPrecio = new javax.swing.JTextField();
+        spinnerPrecio = new javax.swing.JSpinner();
+        checkAlta = new javax.swing.JCheckBox();
+        jLabel7 = new javax.swing.JLabel();
+        tfDNI = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -100,11 +110,11 @@ public class Listado extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Matricula", "Marca", "Modelo", "Año", "Precio"
+                "Matricula", "Marca", "Modelo", "Color", "Precio", "Estado", "DNI Propietario"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Boolean.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -148,9 +158,15 @@ public class Listado extends javax.swing.JDialog {
 
         jLabel4.setText("Modelo");
 
-        jLabel5.setText("Año");
+        jLabel5.setText("Color");
 
         jLabel6.setText("Precio");
+
+        checkAlta.setText("ALTA");
+
+        jLabel7.setText("Estado");
+
+        jLabel8.setText("DNI Propietario");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -163,27 +179,32 @@ public class Listado extends javax.swing.JDialog {
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(57, 57, 57)
+                        .addGap(0, 43, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnModificar)
-                                .addGap(18, 18, 18)
+                                .addGap(32, 32, 32)
                                 .addComponent(btnBorrar))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel8))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tfAnio, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tfColor, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(tfModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(tfMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(tfMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(spinnerPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(checkAlta)
+                            .addComponent(tfDNI, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSalir)))
@@ -211,12 +232,20 @@ public class Listado extends javax.swing.JDialog {
                             .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(tfAnio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tfColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(tfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(spinnerPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(checkAlta)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfDNI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnModificar)
@@ -236,26 +265,36 @@ public class Listado extends javax.swing.JDialog {
         int selectedRow = tableCoches.rowAtPoint(evt.getPoint());
         
         if (selectedRow != -1) {
-            JTextField[] tfList = { tfMatricula, tfMarca, tfModelo, tfAnio, tfPrecio };
+            JTextField[] tfList = { tfMatricula, tfMarca, tfModelo, tfColor };
             
             for (int i = 0; i < tfList.length; i++) {
                 tfList[i].setText(tableModel.getValueAt(selectedRow, i).toString());
             }
         }
         
+        int precio = Integer.parseInt(tableModel.getValueAt(selectedRow, 5).toString());
+        boolean alta = (boolean) tableModel.getValueAt(selectedRow, 6);
+        tfDNI.setText(tableModel.getValueAt(selectedRow, 7).toString());
+        
+        spinnerPrecio.setValue(precio);
+        checkAlta.setSelected(alta);
     }//GEN-LAST:event_tableCochesMouseClicked
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         if (validInput()) {
+            Object valorSpinner = spinnerPrecio.getValue();
+            int precio = ((Number) valorSpinner).intValue();
             Coche c = new Coche(
                     tfMatricula.getText(),
                     tfMarca.getText(),
                     tfModelo.getText(),
-                    Integer.parseInt(tfAnio.getText()),
-                    Integer.parseInt(tfPrecio.getText())
+                    tfColor.getText(),
+                    precio,
+                    checkAlta.isSelected(),
+                    tfDNI.getText()
             );
-            
-            if (conn.conectar() && conn.actualizarCoche(c)) {
+
+            if (conn.conectar() && conn.actualizarObjeto(c)) {
                 cargarCoches();
                 JOptionPane.showMessageDialog(
                         this, 
@@ -283,15 +322,19 @@ public class Listado extends javax.swing.JDialog {
 
     private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
         if (validInput()) {
+            Object valorSpinner = spinnerPrecio.getValue();
+            int precio = ((Number) valorSpinner).intValue();
             Coche c = new Coche(
                     tfMatricula.getText(),
                     tfMarca.getText(),
                     tfModelo.getText(),
-                    Integer.parseInt(tfAnio.getText()),
-                    Integer.parseInt(tfPrecio.getText())
+                    tfColor.getText(),
+                    precio,
+                    checkAlta.isSelected(),
+                    tfDNI.getText()
             );
             
-            if (conn.conectar() && conn.borrarCoche(c)) {
+            if (conn.conectar() && conn.borrarObjeto(c)) {
                 cargarCoches();
                 JOptionPane.showMessageDialog(
                         this, 
@@ -364,18 +407,22 @@ public class Listado extends javax.swing.JDialog {
     private javax.swing.JButton btnBorrar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnSalir;
+    private javax.swing.JCheckBox checkAlta;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSpinner spinnerPrecio;
     private javax.swing.JTable tableCoches;
-    private javax.swing.JTextField tfAnio;
+    private javax.swing.JTextField tfColor;
+    private javax.swing.JTextField tfDNI;
     private javax.swing.JTextField tfMarca;
     private javax.swing.JTextField tfMatricula;
     private javax.swing.JTextField tfModelo;
-    private javax.swing.JTextField tfPrecio;
     // End of variables declaration//GEN-END:variables
 }

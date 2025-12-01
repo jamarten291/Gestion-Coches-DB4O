@@ -65,7 +65,7 @@ public class Main extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenuCoches);
 
-        jMenu2.setText("Edit");
+        jMenu2.setText("Propietarios");
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
