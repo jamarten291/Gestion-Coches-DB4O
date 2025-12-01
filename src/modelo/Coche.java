@@ -12,20 +12,24 @@ public class Coche {
     private String matricula;
     private String marca;
     private String modelo;
-    private Integer anio;
+    private String color;
     private Integer precio;
+    private Boolean alta;
+    private String dni;
 
-    public Coche() {
-    }
-
-    public Coche(String matricula, String marca, String modelo, int anio, int precio) {
+    public Coche(String matricula, String marca, String modelo, String color, Integer precio, Boolean alta, String dni) {
         this.matricula = matricula;
         this.marca = marca;
         this.modelo = modelo;
-        this.anio = anio;
+        this.color = color;
         this.precio = precio;
+        this.alta = alta;
+        this.dni = dni;
     }
 
+    public Coche() {
+    }
+    
     public String getMatricula() {
         return matricula;
     }
@@ -50,24 +54,41 @@ public class Coche {
         this.modelo = modelo;
     }
 
-    public int getAnio() {
-        return anio;
+    public String getColor() {
+        return color;
     }
 
-    public void setAnio(int anio) {
-        this.anio = anio;
+    public void setColor(String color) {
+        this.color = color;
     }
 
-    public int getPrecio() {
+    public Integer getPrecio() {
         return precio;
     }
 
-    public void setPrecio(int precio) {
+    public void setPrecio(Integer precio) {
         this.precio = precio;
+    }
+
+    public Boolean deAlta() {
+        return alta;
+    }
+
+    public void setAlta(Boolean alta) {
+        this.alta = alta;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
     }
 
     @Override
     public String toString() {
-        return "Coche{" + "matricula=" + matricula + ", marca=" + marca + ", modelo=" + modelo + ", anio=" + anio + ", precio=" + precio + '}';
+        return "Coche{" + "matricula=" + matricula + ", marca=" + marca + ", modelo=" + modelo + ", color=" + color + ", precio=" + precio + ", estado=" + alta + ", dni=" + dni + '}';
     }
+
 }

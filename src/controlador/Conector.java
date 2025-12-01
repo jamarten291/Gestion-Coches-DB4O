@@ -13,6 +13,7 @@ import com.db4o.ext.Db4oIOException;
 import com.db4o.query.Query;
 import java.util.ArrayList;
 import modelo.Coche;
+import modelo.Propietario;
 
 /**
  *
@@ -38,11 +39,23 @@ public class Conector {
         return flag;
     }
     
-    public boolean insertarCoche (Object o) {
+    public boolean insertarObjeto (Object o) {
         boolean flag = false;
         
         try {
-            bd.store(o);
+            if (o instanceof Coche c) {
+                if (c.deAlta()) {
+                    // Si está de alta, se comprueba que tenga un DNI válido
+                    flag = existeDni(c.getDni());
+                } else {
+                    // Si no está de alta, no lo comprueba
+                    flag = true;
+                }
+            }
+            
+            if (flag) {
+                bd.store(o);
+            }
         } catch (Exception e) {
             System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
         } finally {
@@ -52,70 +65,116 @@ public class Conector {
         return flag;
     }
     
-    public boolean actualizarCoche (Coche c) {
-        boolean flag = false;
+    public <T> ArrayList<T> listarObjetos (T obj) {
+        ArrayList<T> coches = new ArrayList<>();
         
-        try {
-            Query query = bd.query();
-            query.constrain(Coche.class);
-            query.descend("matricula").constrain(c.getMatricula());
-            
-            ObjectSet<Coche> resultado = query.execute();
-            
-            if (!resultado.isEmpty()) {
-                Coche modificado = resultado.get(0);
-                modificado.setMarca(c.getMarca());
-                modificado.setModelo(c.getModelo());
-                modificado.setAnio(c.getAnio());
-                modificado.setPrecio(c.getPrecio());
-                bd.store(modificado);
-                bd.commit();
-                flag = true;
-            }
-        } catch (DatabaseClosedException | DatabaseReadOnlyException | Db4oIOException e) {
-            System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
-        } finally {
-            cerrar();
-        }
-        
-        return flag;
-    }
-    
-    public boolean borrarCoche (Coche c){
-        boolean flag = false;
-        
-        try {
-            Query query = bd.query();
-            query.constrain(Coche.class);
-            query.descend("matricula").constrain(c.getMatricula());
-            
-            ObjectSet<Coche> resultado = query.execute();
-            
-            if (!resultado.isEmpty()) {
-                Coche modificado = resultado.get(0);
-                bd.delete(modificado);
-                bd.commit();
-                flag = true;
-            }
-        } catch (DatabaseClosedException | DatabaseReadOnlyException | Db4oIOException e) {
-            System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
-        } finally {
-            cerrar();
-        }
-        
-        return flag;
-    }
-    
-    public ArrayList<Coche> listarCoches () {
-        ArrayList<Coche> coches = new ArrayList<>();
-        
-        ObjectSet resultado = bd.query(Coche.class);
+        ObjectSet resultado = bd.query(obj.getClass());
         for (Object o : resultado) {
-            coches.add((Coche) o);
+            coches.add((T) o);
         }
         
         cerrar();
         return coches;
+    }
+    
+    public <T> boolean actualizarObjeto (T obj) {
+        boolean flag = false;
+        
+        try {
+            Query query = bd.query();
+            query.constrain(obj.getClass());
+            
+            if (obj instanceof Coche c) {
+                // Busca el coche en la lista y lo actualiza si existe
+                query.descend("matricula").constrain(c.getMatricula());
+                ObjectSet<Coche> resultado = query.execute();
+                Coche modificado = null;
+
+                if (!resultado.isEmpty()) {
+                    modificado = resultado.get(0);
+                    modificado.setMarca(c.getMarca());
+                    modificado.setModelo(c.getModelo());
+                    modificado.setColor(c.getColor());
+                    modificado.setPrecio(c.getPrecio());
+                    modificado.setAlta(c.deAlta());
+                    modificado.setDni(c.getDni());
+                }
+
+                if (c.deAlta()) {
+                    flag = existeDni(c.getDni());
+                }
+
+                // No introduce el campo hasta que compruebe que el DNI existe si está de alta
+                // Si no está de alta no lo comprueba
+                if (flag) {
+                    bd.store(modificado);
+                    bd.commit();
+                    flag = true;
+                }
+            } else if (obj instanceof Propietario p) {
+                // Busca el propietario en la lista y lo actualiza si existe
+                query.descend("dni").constrain(p.getDni());
+            
+                ObjectSet<Propietario> resultado = query.execute();
+
+                if (!resultado.isEmpty()) {
+                    Propietario modificado = resultado.get(0);
+                    modificado.setDni(p.getDni());
+                    modificado.setNombre(p.getNombre());
+                    modificado.setEdad(p.getEdad());
+                    modificado.setEmail(p.getEmail());
+                    bd.store(modificado);
+                    bd.commit();
+                    flag = true;
+                }
+            }
+        } catch (DatabaseClosedException | DatabaseReadOnlyException | Db4oIOException e) {
+            System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
+        } finally {
+            cerrar();
+        }
+        
+        return flag;
+    }
+    
+    public boolean existeDni(String dni) {
+        Query query = bd.query();
+        query.constrain(Propietario.class);
+        query.descend("dni").constrain(dni);
+
+        return query.execute() != null;
+    }
+    
+    public <T> boolean borrarObjeto (T obj){
+        boolean flag = false;
+        
+        try {
+            Query query = bd.query();
+            query.constrain(obj.getClass());
+            
+            // Dependiendo de si se trate de un coche o un propietario, lo busca
+            // Si existe, lo elimina
+            if (obj instanceof Coche c) {
+                query.descend("matricula").constrain(c.getMatricula());
+            } else if (obj instanceof Propietario p) {
+                query.descend("dni").constrain(p.getDni());
+            }
+            ObjectSet<T> resultado = query.execute();
+
+            if (!resultado.isEmpty()) {
+                T modificado = resultado.get(0);
+                bd.delete(modificado);
+                bd.commit();
+                flag = true;
+            }
+            
+        } catch (DatabaseClosedException | DatabaseReadOnlyException | Db4oIOException e) {
+            System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
+        } finally {
+            cerrar();
+        }
+        
+        return flag;
     }
     
     public boolean cerrar () {
@@ -125,7 +184,6 @@ public class Conector {
             System.err.println("Error al cerrar la base de datos: " + e.getMessage());
             return false;
         }
-        
     }
     
 }
