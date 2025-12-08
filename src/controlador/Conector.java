@@ -187,7 +187,7 @@ public class Conector {
     public boolean cerrar () {
         try {
             return bd.close();
-        } catch (Exception e) {
+        } catch (Db4oIOException e) {
             System.err.println("Error al cerrar la base de datos: " + e.getMessage());
             return false;
         }
