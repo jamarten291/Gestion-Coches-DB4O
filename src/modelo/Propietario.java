@@ -21,6 +21,9 @@ public class Propietario {
         this.email = email;
     }
 
+    public Propietario() {
+    }
+    
     public String getDni() {
         return dni;
     }

@@ -8,8 +8,11 @@ import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.db4o.ext.DatabaseClosedException;
+import com.db4o.ext.DatabaseFileLockedException;
 import com.db4o.ext.DatabaseReadOnlyException;
 import com.db4o.ext.Db4oIOException;
+import com.db4o.ext.IncompatibleFileFormatException;
+import com.db4o.ext.OldFormatException;
 import com.db4o.query.Query;
 import java.util.ArrayList;
 import modelo.Coche;
@@ -32,7 +35,7 @@ public class Conector {
         try {
             bd = Db4o.openFile(RUTA);
             flag = true;
-        } catch (Exception e) {
+        } catch (DatabaseFileLockedException | DatabaseReadOnlyException | Db4oIOException | IncompatibleFileFormatException | OldFormatException e) {
             System.err.println("Error al abrir la base de datos: " + e.getMessage());
         }
         
@@ -43,20 +46,19 @@ public class Conector {
         boolean flag = false;
         
         try {
-            if (o instanceof Coche c) {
-                if (c.deAlta()) {
-                    // Si está de alta, se comprueba que tenga un DNI válido
-                    flag = existeDni(c.getDni());
-                } else {
-                    // Si no está de alta, no lo comprueba
-                    flag = true;
-                }
+        if (conectar()) {
+            if (o instanceof Coche c && c.deAlta()) {
+                // Si está de alta y es un coche, se comprueba que tenga un DNI válido
+                flag = existeDni(c.getDni());
+            } else {
+                flag = true;
             }
-            
+
             if (flag) {
                 bd.store(o);
             }
-        } catch (Exception e) {
+        }
+        } catch (DatabaseClosedException | DatabaseReadOnlyException e) {
             System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
         } finally {
             cerrar();
@@ -65,25 +67,28 @@ public class Conector {
         return flag;
     }
     
-    public <T> ArrayList<T> listarObjetos (T obj) {
-        ArrayList<T> coches = new ArrayList<>();
+    public <T> ArrayList<T> listarObjetos (Class<T> clazz) {
+        ArrayList<T> objetos = new ArrayList<>();
         
-        ObjectSet resultado = bd.query(obj.getClass());
-        for (Object o : resultado) {
-            coches.add((T) o);
+        if (conectar()) {
+            ObjectSet resultado = bd.query(clazz);
+            for (Object o : resultado) {
+                objetos.add((T) o);
+            }
+
+            cerrar();
         }
         
-        cerrar();
-        return coches;
+        return objetos;
     }
     
     public <T> boolean actualizarObjeto (T obj) {
         boolean flag = false;
-        
         try {
+        if (conectar()) {
             Query query = bd.query();
             query.constrain(obj.getClass());
-            
+
             if (obj instanceof Coche c) {
                 // Busca el coche en la lista y lo actualiza si existe
                 query.descend("matricula").constrain(c.getMatricula());
@@ -114,7 +119,7 @@ public class Conector {
             } else if (obj instanceof Propietario p) {
                 // Busca el propietario en la lista y lo actualiza si existe
                 query.descend("dni").constrain(p.getDni());
-            
+
                 ObjectSet<Propietario> resultado = query.execute();
 
                 if (!resultado.isEmpty()) {
@@ -128,6 +133,7 @@ public class Conector {
                     flag = true;
                 }
             }
+        }
         } catch (DatabaseClosedException | DatabaseReadOnlyException | Db4oIOException e) {
             System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
         } finally {
@@ -137,7 +143,7 @@ public class Conector {
         return flag;
     }
     
-    public boolean existeDni(String dni) {
+    private boolean existeDni(String dni) {
         Query query = bd.query();
         query.constrain(Propietario.class);
         query.descend("dni").constrain(dni);
@@ -149,9 +155,10 @@ public class Conector {
         boolean flag = false;
         
         try {
+        if (conectar()) {
             Query query = bd.query();
             query.constrain(obj.getClass());
-            
+
             // Dependiendo de si se trate de un coche o un propietario, lo busca
             // Si existe, lo elimina
             if (obj instanceof Coche c) {
@@ -167,7 +174,7 @@ public class Conector {
                 bd.commit();
                 flag = true;
             }
-            
+        }
         } catch (DatabaseClosedException | DatabaseReadOnlyException | Db4oIOException e) {
             System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
         } finally {

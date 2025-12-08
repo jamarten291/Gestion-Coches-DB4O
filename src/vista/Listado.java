@@ -61,7 +61,7 @@ public class Listado extends javax.swing.JDialog {
     
     private void cargarCoches () {
         if (conn.conectar()) {
-            ArrayList<Coche> coches = conn.listarObjetos(new Coche());
+            ArrayList<Coche> coches = conn.listarObjetos(Coche.class);
             actualizarTabla(coches);
         } else {
             JOptionPane.showMessageDialog(
@@ -247,10 +247,11 @@ public class Listado extends javax.swing.JDialog {
                             .addComponent(tfDNI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel8))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnModificar)
-                    .addComponent(btnBorrar)
-                    .addComponent(btnSalir))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnBorrar)
+                        .addComponent(btnSalir)))
                 .addGap(27, 27, 27))
         );
 

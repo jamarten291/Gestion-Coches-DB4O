@@ -2,9 +2,11 @@ package vista;
 
 import controlador.Conector;
 import controlador.HelperClass;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import modelo.Coche;
+import modelo.Propietario;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -15,17 +17,26 @@ import modelo.Coche;
  *
  * @author Usuario
  */
-public class Alta extends javax.swing.JDialog {
+public class AltaCoche extends javax.swing.JDialog {
 
    private Conector conn;
     
     /**
      * Creates new form Alta
      */
-    public Alta(java.awt.Frame parent, boolean modal) {
+    public AltaCoche(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         conn = new Conector();
+        initCheckBoxDni();
+    }
+    
+    private void initCheckBoxDni() {
+        List<Propietario> propietarios = conn.listarObjetos(Propietario.class);
+        
+        for (Propietario propietario : propietarios) {
+            cbDni.addItem(propietario.getDni());
+        }
     }
 
     /**
@@ -52,8 +63,8 @@ public class Alta extends javax.swing.JDialog {
         tfColor = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        tfDNI = new javax.swing.JTextField();
         checkAlta = new javax.swing.JCheckBox();
+        cbDni = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -106,34 +117,25 @@ public class Alta extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(48, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(tfColor, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel6)
-                                    .addComponent(btnGuardar))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 187, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tfModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(tfMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(tfMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnCerrar)
-                                    .addComponent(spinnerPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(tfDNI, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(checkAlta))))
-                        .addGap(40, 40, 40))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel8))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel6)
+                    .addComponent(btnGuardar)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel8))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 187, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tfColor, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCerrar)
+                    .addComponent(spinnerPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(checkAlta)
+                    .addComponent(cbDni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(40, 40, 40))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,17 +167,14 @@ public class Alta extends javax.swing.JDialog {
                     .addComponent(jLabel8)
                     .addComponent(checkAlta))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnGuardar)
-                            .addComponent(btnCerrar))
-                        .addGap(42, 42, 42))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(tfDNI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(cbDni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnGuardar)
+                    .addComponent(btnCerrar))
+                .addGap(42, 42, 42))
         );
 
         pack();
@@ -183,34 +182,34 @@ public class Alta extends javax.swing.JDialog {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (validInput()) {
-            if (conn.conectar()) {
-                Object valorSpinner = spinnerPrecio.getValue();
-                int precio = ((Number) valorSpinner).intValue();
-                Coche c = new Coche(
-                        tfMatricula.getText(),
-                        tfMarca.getText(),
-                        tfModelo.getText(),
-                        tfColor.getText(),
-                        precio,
-                        checkAlta.isSelected(),
-                        tfDNI.getText()
-                );
+            Object valorSpinner = spinnerPrecio.getValue();
+            int precio = ((Number) valorSpinner).intValue();
+            Object dni = cbDni.getSelectedItem();
+            
+            Coche c = new Coche(
+                    tfMatricula.getText(),
+                    tfMarca.getText(),
+                    tfModelo.getText(),
+                    tfColor.getText(),
+                    precio,
+                    checkAlta.isSelected(),
+                    dni == null ? "" : dni.toString()
+            );
 
-                if (!conn.insertarObjeto(c)) {
-                    JOptionPane.showMessageDialog(
-                            this, 
-                            "Se ha realizado la operación de forma exitosa", 
-                            "Información", 
-                            JOptionPane.INFORMATION_MESSAGE
-                    );
-                } else {
-                    JOptionPane.showMessageDialog(
-                            this, 
-                            "No se ha podido insertar el campo", 
-                            "Error", 
-                            JOptionPane.ERROR_MESSAGE
-                    );
-                }
+            if (conn.insertarObjeto(c)) {
+                JOptionPane.showMessageDialog(
+                        this, 
+                        "Se ha realizado la operación de forma exitosa", 
+                        "Información", 
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                JOptionPane.showMessageDialog(
+                        this, 
+                        "No se ha podido insertar el campo", 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         } else {
             JOptionPane.showMessageDialog(
@@ -224,16 +223,21 @@ public class Alta extends javax.swing.JDialog {
 
     public boolean validInput () {
         boolean valid = true;
-        JTextField[] tfList = { tfMarca, tfModelo, tfColor, tfDNI };
+        JTextField[] tfList = { tfMarca, tfModelo, tfColor};
         
         for (JTextField tf : tfList) {
             if (tf.getText().isEmpty()) valid = false;
+        }
+        
+        if (checkAlta.isSelected()) {
+            if (cbDni.getSelectedIndex() == -1) valid = false;
         }
         
         if (!HelperClass.matchesRegex(tfMatricula.getText(),"[0-9]{4} [BCDFGHJKLMNPQRSTVWXYZ]{3}") ||
                 Integer.parseInt(spinnerPrecio.getValue().toString()) <= 0) {
             valid = false;
         }
+        
         
         return valid;
     }
@@ -263,20 +267,21 @@ public class Alta extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Alta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AltaCoche.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Alta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AltaCoche.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Alta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AltaCoche.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Alta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AltaCoche.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Alta dialog = new Alta(new javax.swing.JFrame(), true);
+                AltaCoche dialog = new AltaCoche(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -291,6 +296,7 @@ public class Alta extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCerrar;
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JComboBox<String> cbDni;
     private javax.swing.JCheckBox checkAlta;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -302,7 +308,6 @@ public class Alta extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JSpinner spinnerPrecio;
     private javax.swing.JTextField tfColor;
-    private javax.swing.JTextField tfDNI;
     private javax.swing.JTextField tfMarca;
     private javax.swing.JTextField tfMatricula;
     private javax.swing.JTextField tfModelo;
