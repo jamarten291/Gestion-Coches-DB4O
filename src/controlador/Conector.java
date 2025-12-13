@@ -59,6 +59,7 @@ public class Conector {
             }
         }
         } catch (DatabaseClosedException | DatabaseReadOnlyException e) {
+            bd.rollback();
             System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
         } finally {
             cerrar();
@@ -135,6 +136,7 @@ public class Conector {
             }
         }
         } catch (DatabaseClosedException | DatabaseReadOnlyException | Db4oIOException e) {
+            bd.rollback();
             System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
         } finally {
             cerrar();
@@ -176,6 +178,7 @@ public class Conector {
             }
         }
         } catch (DatabaseClosedException | DatabaseReadOnlyException | Db4oIOException e) {
+            bd.rollback();
             System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
         } finally {
             cerrar();
@@ -248,7 +251,7 @@ public class Conector {
         boolean flag = false;
         
         if (conectar()) {
-            int porcentaje = valor / 100;
+            double porcentaje = (double) valor / 100;
             
             Query query = bd.query();
             
@@ -256,10 +259,10 @@ public class Conector {
             ObjectSet<Coche> rs = query.execute();
             while (rs.hasNext()) {
                 Coche c = rs.next();
-                int nuevoPrecio = c.getPrecio() * porcentaje;
+                double nuevoPrecio = c.getPrecio() * porcentaje;
                 
                 // Se asegura de que tenga un precio mínimo de 0
-                c.setPrecio(Math.max(0, c.getPrecio() + nuevoPrecio));
+                c.setPrecio(Math.max(0, c.getPrecio() + ((int) nuevoPrecio)));
                 bd.store(c);
                 bd.commit();
             }
@@ -293,6 +296,7 @@ public class Conector {
             }
         }
         } catch (DatabaseClosedException | DatabaseReadOnlyException | Db4oIOException e) {
+            bd.rollback();
             System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
         } finally {
             cerrar();
