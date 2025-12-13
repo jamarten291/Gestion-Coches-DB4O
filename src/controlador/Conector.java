@@ -184,6 +184,123 @@ public class Conector {
         return flag;
     }
     
+    /* ---------- CONSULTAS ---------- */
+    
+    public ArrayList getPropietariosMayoresDeCuarenta () {
+        ArrayList<Propietario> propietarios = new ArrayList<>();
+        
+        if (conectar()) {
+            Query query = bd.query();
+            query.constrain(Propietario.class);
+            query.descend("edad").constrain(40).greater();
+            
+            ObjectSet<Propietario> resultado = query.execute();
+            for (Propietario p : resultado) {
+                propietarios.add(p);
+            }
+            
+            cerrar();
+        }
+        
+        return propietarios;
+    }
+    
+    public ArrayList getCochesEntreDosPrecios (int precioMin, int precioMax) {
+        ArrayList<Coche> coches = new ArrayList<>();
+        
+        if (conectar()) {
+            Query query = bd.query();
+            query.constrain(Coche.class);
+            query.descend("precio").constrain(precioMin).greater();
+            query.descend("precio").constrain(precioMax).smaller();
+            
+            ObjectSet<Coche> resultado = query.execute();
+            for (Coche c : resultado) {
+                coches.add(c);
+            }
+            
+            cerrar();
+        }
+        
+        return coches;
+    }
+    
+    public ArrayList getCochesByPropietario (String propietario) {
+        ArrayList<Coche> coches = new ArrayList<>();
+        
+        if (conectar()) {
+            Query query = bd.query();
+            query.constrain(Coche.class);
+            query.descend("dni").constrain(propietario);
+            
+            ObjectSet<Coche> resultado = query.execute();
+            for (Coche c : resultado) {
+                coches.add(c);
+            }
+            
+            cerrar();
+        }
+        
+        return coches;
+    }
+    
+    public boolean modificarCochesPorPorcentaje (int valor) {
+        boolean flag = false;
+        
+        if (conectar()) {
+            int porcentaje = valor / 100;
+            
+            Query query = bd.query();
+            
+            query.constrain(Coche.class);
+            ObjectSet<Coche> rs = query.execute();
+            while (rs.hasNext()) {
+                Coche c = rs.next();
+                int nuevoPrecio = c.getPrecio() * porcentaje;
+                
+                // Se asegura de que tenga un precio mínimo de 0
+                c.setPrecio(Math.max(0, c.getPrecio() + nuevoPrecio));
+                bd.store(c);
+                bd.commit();
+            }
+            
+            bd.commit();
+            flag = true;
+            
+            cerrar();
+        }
+        
+        return flag;
+    }
+    
+    public boolean borrarCochePorMatricula (String matricula){
+        boolean flag = false;
+        
+        try {
+        if (conectar()) {
+            Query query = bd.query();
+            query.constrain(Coche.class);
+
+            query.descend("matricula").constrain(matricula);
+            
+            ObjectSet<Coche> resultado = query.execute();
+
+            if (!resultado.isEmpty()) {
+                Coche modificado = resultado.get(0);
+                bd.delete(modificado);
+                bd.commit();
+                flag = true;
+            }
+        }
+        } catch (DatabaseClosedException | DatabaseReadOnlyException | Db4oIOException e) {
+            System.err.println("Error al guardar un dato en la base de datos: " + e.getMessage());
+        } finally {
+            cerrar();
+        }
+        
+        return flag;
+    }
+    
     public boolean cerrar () {
         try {
             return bd.close();

@@ -1,5 +1,13 @@
 package vista;
 
+import controlador.Conector;
+import controlador.HelperClass;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import modelo.Coche;
+import modelo.Propietario;
+
 /**
  *
  * @author jacksonmh16
@@ -7,15 +15,37 @@ package vista;
 public class Consulta extends javax.swing.JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Consulta.class.getName());
-
+    private Conector conn;
+    private DefaultTableModel cocheTableModel;
+    private DefaultTableModel propietarioTableModel;
+    
     /**
      * Creates new form Consulta
      */
     public Consulta(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        conn = new Conector();
         initComponents();
+        initCombos();
+        
+        // Table model initialization
+        cocheTableModel = (DefaultTableModel) tablaCoches.getModel();
+        propietarioTableModel = (DefaultTableModel) tablaPropietarios.getModel();
     }
-
+    
+    private void initCombos() {
+        ArrayList<Coche> coches = conn.listarObjetos(Coche.class);
+        ArrayList<Propietario> propietarios = conn.listarObjetos(Propietario.class);
+        
+        for (Coche coche : coches) {
+            cbMatEliminar.addItem(coche.getMatricula());
+        }
+        
+        for (Propietario propietario : propietarios) {
+            cbPropietario.addItem(propietario.getDni());
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -27,27 +57,106 @@ public class Consulta extends javax.swing.JDialog {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaPropietarios = new javax.swing.JTable();
+        btnListarPropietarios = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
+        jLabel1 = new javax.swing.JLabel();
+        cbEdad = new javax.swing.JComboBox<>();
+        btnBuscarPropietariosEdad = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableCoches = new javax.swing.JTable();
+        tablaCoches = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        cbPropietario = new javax.swing.JComboBox<>();
+        btnBuscarCoches1 = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JSeparator();
+        jLabel3 = new javax.swing.JLabel();
+        spPrecioMin = new javax.swing.JSpinner();
+        jLabel4 = new javax.swing.JLabel();
+        spPrecioMax = new javax.swing.JSpinner();
+        btnBuscarCoches2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        sliderPrecio = new javax.swing.JSlider();
+        btnAplicarPrecio = new javax.swing.JButton();
+        jSeparator3 = new javax.swing.JSeparator();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        cbMatEliminar = new javax.swing.JComboBox<>();
+        btnBorrarCoche = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        tablaPropietarios.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "DNI", "Nombre", "Edad", "Email"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tablaPropietarios);
+
+        btnListarPropietarios.setText("LISTAR TODOS");
+        btnListarPropietarios.addActionListener(this::btnListarPropietariosActionPerformed);
+
+        jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
+        jLabel1.setText("Por edad");
+
+        cbEdad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Más de 40" }));
+
+        btnBuscarPropietariosEdad.setText("BUSCAR");
+        btnBuscarPropietariosEdad.addActionListener(this::btnBuscarPropietariosEdadActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 665, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnListarPropietarios, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbEdad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBuscarPropietariosEdad))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 423, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(11, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnListarPropietarios, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(cbEdad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnBuscarPropietariosEdad)))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(61, 61, 61))
         );
 
         jTabbedPane1.addTab("Consultar Propietarios", jPanel1);
 
-        tableCoches.setModel(new javax.swing.table.DefaultTableModel(
+        tablaCoches.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -63,12 +172,28 @@ public class Consulta extends javax.swing.JDialog {
                 return types [columnIndex];
             }
         });
-        tableCoches.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablaCoches.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableCochesMouseClicked(evt);
+                tablaCochesMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tableCoches);
+        jScrollPane1.setViewportView(tablaCoches);
+
+        jLabel2.setText("Búsqueda por propietario");
+
+        btnBuscarCoches1.setText("BUSCAR");
+        btnBuscarCoches1.addActionListener(this::btnBuscarCoches1ActionPerformed);
+
+        jLabel3.setText("Precio entre");
+
+        spPrecioMin.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+
+        jLabel4.setText("y");
+
+        spPrecioMax.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+
+        btnBuscarCoches2.setText("BUSCAR");
+        btnBuscarCoches2.addActionListener(this::btnBuscarCoches2ActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -76,28 +201,123 @@ public class Consulta extends javax.swing.JDialog {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(spPrecioMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addComponent(spPrecioMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnBuscarCoches2))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbPropietario, 0, 197, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnBuscarCoches1))
+                    .addComponent(jScrollPane1)
+                    .addComponent(jSeparator2))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(78, 78, 78)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(cbPropietario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBuscarCoches1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(spPrecioMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(spPrecioMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBuscarCoches2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Consultar Coches", jPanel2);
+
+        jLabel5.setFont(new java.awt.Font("Noto Sans", 1, 20)); // NOI18N
+        jLabel5.setText("Aumentar precio de todos los coches:");
+
+        sliderPrecio.setMajorTickSpacing(10);
+        sliderPrecio.setMaximum(20);
+        sliderPrecio.setMinimum(-20);
+        sliderPrecio.setMinorTickSpacing(1);
+        sliderPrecio.setPaintTicks(true);
+        sliderPrecio.setSnapToTicks(true);
+        sliderPrecio.setValue(0);
+        sliderPrecio.setAutoscrolls(true);
+        sliderPrecio.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+        btnAplicarPrecio.setText("APLICAR");
+        btnAplicarPrecio.addActionListener(this::btnAplicarPrecioActionPerformed);
+
+        jLabel6.setFont(new java.awt.Font("Noto Sans", 1, 20)); // NOI18N
+        jLabel6.setText("Borrar un coche:");
+
+        jLabel7.setText("Introduce la matrícula:");
+
+        btnBorrarCoche.setText("BORRAR");
+        btnBorrarCoche.addActionListener(this::btnBorrarCocheActionPerformed);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 665, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(sliderPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnAplicarPrecio))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(jLabel5))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(18, 18, 18)
+                                .addComponent(cbMatEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(38, 38, 38)
+                                .addComponent(btnBorrarCoche))
+                            .addComponent(jLabel6)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 630, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 423, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addComponent(jLabel5)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(sliderPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAplicarPrecio))
+                .addGap(41, 41, 41)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel6)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(cbMatEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBorrarCoche))
+                .addContainerGap(173, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Operaciones", jPanel3);
@@ -115,16 +335,129 @@ public class Consulta extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tableCochesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCochesMouseClicked
+    private void tablaCochesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaCochesMouseClicked
         
-    }//GEN-LAST:event_tableCochesMouseClicked
+    }//GEN-LAST:event_tablaCochesMouseClicked
+
+    private void btnListarPropietariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarPropietariosActionPerformed
+        propietarioTableModel.setRowCount(0);
+        
+        ArrayList<Propietario> propietarios = conn.listarObjetos(Propietario.class);
+        for (Propietario propietario : propietarios) {
+            Object[] data = {
+                propietario.getDni(),
+                propietario.getNombre(),
+                propietario.getEdad(),
+                propietario.getEmail()
+            };
+            
+            propietarioTableModel.addRow(data);
+        }
+    }//GEN-LAST:event_btnListarPropietariosActionPerformed
+
+    private void btnBuscarPropietariosEdadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPropietariosEdadActionPerformed
+        propietarioTableModel.setRowCount(0);
+        
+        ArrayList<Propietario> propietarios = conn.getPropietariosMayoresDeCuarenta();
+        for (Propietario propietario : propietarios) {
+            Object[] data = {
+                propietario.getDni(),
+                propietario.getNombre(),
+                propietario.getEdad(),
+                propietario.getEmail()
+            };
+
+            propietarioTableModel.addRow(data);
+        }
+    }//GEN-LAST:event_btnBuscarPropietariosEdadActionPerformed
+
+    private void btnBuscarCoches1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarCoches1ActionPerformed
+        cocheTableModel.setRowCount(0);
+        String dniPropietario = cbPropietario.getSelectedItem().toString();
+        
+        ArrayList<Coche> coches = conn.getCochesByPropietario(dniPropietario);
+        for (Coche c : coches) {
+            Object[] data = {
+                c.getMatricula(),
+                c.getMarca(),
+                c.getModelo(),
+                c.getColor(),
+                c.getPrecio(),
+                c.deAlta(),
+                c.getDni()
+            };
+
+            cocheTableModel.addRow(data);
+        }
+    }//GEN-LAST:event_btnBuscarCoches1ActionPerformed
+
+    private void btnBuscarCoches2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarCoches2ActionPerformed
+        cocheTableModel.setRowCount(0);
+        int precioMin = (int) spPrecioMin.getValue();
+        int precioMax = (int) spPrecioMax.getValue();
+        
+        ArrayList<Coche> coches = conn.getCochesEntreDosPrecios(precioMin, precioMax);
+        for (Coche c : coches) {
+            Object[] data = {
+                c.getMatricula(),
+                c.getMarca(),
+                c.getModelo(),
+                c.getColor(),
+                c.getPrecio(),
+                c.deAlta(),
+                c.getDni()
+            };
+
+            cocheTableModel.addRow(data);
+        }
+    }//GEN-LAST:event_btnBuscarCoches2ActionPerformed
+
+    private void btnAplicarPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAplicarPrecioActionPerformed
+        int porcentaje = sliderPrecio.getValue();
+        
+        if (conn.modificarCochesPorPorcentaje(porcentaje)) {
+            HelperClass.lanzarAlerta(
+                    "Información", 
+                    "El precio de los coches fue actualizado con éxito", 
+                    JOptionPane.INFORMATION_MESSAGE, 
+                    this
+            );
+        } else {
+            HelperClass.lanzarAlerta(
+                    "Error", 
+                    "La operación no pudo ser realizada", 
+                    JOptionPane.ERROR_MESSAGE, 
+                    this
+            );
+        }
+    }//GEN-LAST:event_btnAplicarPrecioActionPerformed
+
+    private void btnBorrarCocheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarCocheActionPerformed
+        String matricula = cbMatEliminar.getSelectedItem().toString();
+        
+        if (conn.borrarCochePorMatricula(matricula)) {
+            HelperClass.lanzarAlerta(
+                    "Información", 
+                    "El coche fue borrado con éxito", 
+                    JOptionPane.INFORMATION_MESSAGE, 
+                    this
+            );
+        } else {
+            HelperClass.lanzarAlerta(
+                    "Error", 
+                    "La operación no pudo ser realizada", 
+                    JOptionPane.ERROR_MESSAGE, 
+                    this
+            );
+        }
+    }//GEN-LAST:event_btnBorrarCocheActionPerformed
 
     /**
      * @param args the command line arguments
@@ -164,11 +497,35 @@ public class Consulta extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAplicarPrecio;
+    private javax.swing.JButton btnBorrarCoche;
+    private javax.swing.JButton btnBuscarCoches1;
+    private javax.swing.JButton btnBuscarCoches2;
+    private javax.swing.JButton btnBuscarPropietariosEdad;
+    private javax.swing.JButton btnListarPropietarios;
+    private javax.swing.JComboBox<String> cbEdad;
+    private javax.swing.JComboBox<String> cbMatEliminar;
+    private javax.swing.JComboBox<String> cbPropietario;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable tableCoches;
+    private javax.swing.JSlider sliderPrecio;
+    private javax.swing.JSpinner spPrecioMax;
+    private javax.swing.JSpinner spPrecioMin;
+    private javax.swing.JTable tablaCoches;
+    private javax.swing.JTable tablaPropietarios;
     // End of variables declaration//GEN-END:variables
 }
